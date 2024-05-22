@@ -40,3 +40,36 @@ function updateExpenseTable() {
         expenseTable.appendChild(row);
     }
 }
+
+function calculateTotalExpenses(){
+    let totalExpenses = expenses.reduce((total, expense) => total + expense.amount, 0);
+    document.getElementById('totalExpenses').textContent = totalExpenses.toFixed(2);
+}
+function filterExpenses() {
+    let startDate = document.getElementById('startDate').value;
+    let endDate = document.getElementById('endDate').value;
+    let filteredExpenses = expenses.filter(expense => {
+        let expenseDate = new Date(expense.date);
+        let start = new Date(startDate);
+        let end = new Date(endDate);
+        return expenseDate >= start && expenseDate <= end;
+    });
+    let expenseTable = document.getElementById('expenseTable').getElementsByTagName('tbody')[0];
+    expenseTable.innerHTML = '';
+    for (let i = 0; i < filteredExpenses.length; i++) {
+        let row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${filteredExpenses[i].description}</td>
+            <td>$${filteredExpenses[i].amount.toFixed(2)}</td>
+            <td>${filteredExpenses[i].date}</td>
+            <td><button onclick="removeExpense(${expenses.indexOf(filteredExpenses[i])})">Remove</button></td>
+        `;
+        expenseTable.appendChild(row);
+    }
+    calculateTotalExpenses();
+}
+function clearForm() {
+    document.getElementById('description').value = '';
+    document.getElementById('amount').value = '';
+    document.getElementById('date').value = '';
+}
